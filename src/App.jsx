@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react"; 
 import Table from "react-bootstrap/Table";
 
 import Textbox from "./components/textbox/textbox";
@@ -9,19 +9,28 @@ import "./App.css";
 
 function App() {
   let subTotal = 0;
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCartItems = localStorage.getItem("cartItems");
+    return savedCartItems ? JSON.parse(savedCartItems) : [];
+  });
   const [txtName, setTxtName] = useState("");
   const [textPrice, setTextPrice] = useState("");
   const [textQuantity, setTextQuantity] = useState("");
   const [shipping, setShippingFee] = useState(0);
   const towns = ["Tubigon", "Calape", "Tagbilaran", "Luay"];
   const fee = {
-    Tubigon: 30,
+    Tubigon: 40,
     Calape: 50,
     Tagbilaran: 80,
     Luay: 120,
   };
+
   const [editIndex, setEditIndex] = useState(null);
+  const subContainerRef = useRef(null); // Create a ref for the sub-container
+
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   function onChange(e) {
     const id = e.target.id;
@@ -33,6 +42,13 @@ function App() {
     if (towns.includes(value)) {
       setShippingFee(fee[value]);
     }
+  }
+
+  function scrollToSubContainer() {
+    window.scrollTo({
+      top: subContainerRef.current.offsetTop,
+      behavior: 'smooth',
+    });
   }
 
   function addToChart() {
@@ -47,7 +63,7 @@ function App() {
         const updatedItems = [...cartItems];
         updatedItems[editIndex] = item;
         setCartItems(updatedItems);
-        setEditIndex(null); // Reset edit index
+        setEditIndex(null); 
       } else {
         const newItems = [...cartItems, item];
         setCartItems(newItems);
@@ -56,11 +72,15 @@ function App() {
       setTxtName("");
       setTextPrice("");
       setTextQuantity("");
+
+      // Scroll to the sub-container after adding/updating an item
+      scrollToSubContainer();
     }
   }
 
   function clearCart() {
     setCartItems([]);
+    localStorage.removeItem("cartItems"); 
   }
 
   function deleteItem(itemIndex) {
@@ -74,6 +94,9 @@ function App() {
     setTextPrice(itemToEdit.price);
     setTextQuantity(itemToEdit.quantity);
     setEditIndex(itemIndex);
+
+    // Scroll to the sub-container when editing an item
+    scrollToSubContainer();
   }
 
   function formatCurrency(num) {
@@ -87,13 +110,13 @@ function App() {
   }
 
   function handleCheckout() {
-    window.location.href = "www.facebook.com"; // Replace with your actual link
+    window.location.href = "www.facebook.com"; 
   }
 
   return (
     <div>
       <div className="main-container">
-        <div className="sub-container">
+        <div className="sub-container" ref={subContainerRef}> {/* Attach the ref */}
           <Textbox
             id="txtName"
             type="text"

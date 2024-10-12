@@ -1,13 +1,17 @@
 
 body {
-  /* margin: 0; */
+  color: white;
+  background-image: url(/src/assets/image/1000.jpg);
   height: 180vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(270deg, rgb(116, 3, 3), rgb(26, 185, 26), rgb(23, 23, 112));
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  /* background: linear-gradient(270deg, rgb(238, 182, 182), rgb(155, 240, 155), rgb(250, 186, 103));
   background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite; /* Animation */
+  animation: gradientAnimation 15s ease infinite; Animation */
 }
 
 @keyframes gradientAnimation {
@@ -55,4 +59,10 @@ body {
 .item-container:hover {
   transform: translateY(-10px); 
 }
-
+th{
+  border-radius: 1px;
+  margin-bottom: 40px;
+}
+td{
+  border-radius: 1px;
+}
